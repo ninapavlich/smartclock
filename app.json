@@ -1,0 +1,6 @@
+{
+  "name": "Django IOT Smart Clock CMS for Heroku",
+  "description": "IOT Smart Clock CMS for Django",
+  "repository": "https://github.com/ninapavlich/smartclock",
+  "keywords": ["Django", "Heroku"]
+}

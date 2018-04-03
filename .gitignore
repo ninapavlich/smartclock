@@ -99,3 +99,16 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+static/*
+
+.env
+db.sqlite3
+
+uploads/*
+logs/*
