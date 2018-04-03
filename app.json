@@ -12,9 +12,14 @@
       "description": "A secret key for encryption used on this application.",
       "value": "heroku"
     },
-    "AWS_ACCESS_KEY_ID":{},
-    "AWS_SECRET_ACCESS_KEY":{},
-    "AWS_STORAGE_BUCKET_NAME":{},
-
+    "AWS_ACCESS_KEY_ID":{
+      "description": "Access key for your AWS S3 bucket."
+    },
+    "AWS_SECRET_ACCESS_KEY":{
+      "description": "Secret access key for your AWS S3 bucket."
+    },
+    "AWS_STORAGE_BUCKET_NAME":{
+      "description": "AWS S3 bucket name."
+    }
   }
 }
