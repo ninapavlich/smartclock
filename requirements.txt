@@ -1,3 +1,5 @@
+boto3==1.6.22
+botocore==1.9.22
 certifi==2018.1.18
 chardet==3.0.4
 dj-database-url==0.5.0
@@ -7,10 +9,15 @@ django-debug-toolbar==1.9.1
 django-environ==0.4.4
 django-filter==1.1.0
 django-rest-framework==0.1.0
+django-storages==1.6.6
 djangorestframework==3.7.7
+docutils==0.14
 idna==2.6
+jmespath==0.9.3
+python-dateutil==2.6.1
 pytz==2018.3
 requests==2.18.4
+s3transfer==0.1.13
 six==1.11.0
 sqlparse==0.2.4
 urllib3==1.22
