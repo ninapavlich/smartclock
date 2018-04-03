@@ -15,9 +15,9 @@ import sys
 import environ
 import dj_database_url
 
-
-PROJECT_ROOT = os.path.dirname( os.path.abspath(__file__) )
-root = environ.Path(__file__) - 1
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+root = environ.Path(__file__) - 2
 env = environ.Env()  # set default values and casting
 environ.Env.read_env(env_file=root('.env'))  # reading .env file
 
@@ -27,14 +27,17 @@ environ.Env.read_env(env_file=root('.env'))  # reading .env file
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
-ENVIRONMENT = env('ENVIRONMENT', default='local')
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=False)
 
-ALLOWED_HOSTS = [
-    env('HOST')
-]
+ENVIRONMENT = env('ENVIRONMENT', default='local')
+
+if ENVIRONMENT == 'heroku':
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    ALLOWED_HOSTS = ['.herokuapp.com']
+
 if DEBUG:
     INTERNAL_IPS = ['127.0.0.1']
 
@@ -48,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
 
+    'storages',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
@@ -67,7 +71,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'cms.urls'
 
 TEMPLATES = [
     {
@@ -85,14 +89,20 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'cms.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-DATABASES = {
-    'default': dj_database_url.config(default=env('DATABSE_URL'))
-}
+if ENVIRONMENT == 'local':
+    DATABASES = {
+        'default': dj_database_url.config(default=env('DATABSE_URL'))
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=SECURE_SSL_REDIRECT)
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -131,6 +141,25 @@ STATIC_ROOT = env('STATIC_ROOT', default=os.path.join(PROJECT_ROOT, "static"))
 MEDIA_ROOT = env("MEDIA_ROOT", default=os.path.join(PROJECT_ROOT, 'uploads'))
 MEDIA_URL = env("MEDIA_URL", default='/uploads/')
 
+
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_STATIC_LOCATION = '%s/static'%(ENVIRONMENT)
+
+AWS_PUBLIC_MEDIA_LOCATION = '%s/media/public'%(ENVIRONMENT)
+DEFAULT_FILE_STORAGE = 'cms.storage_backends.PublicMediaStorage'
+
+AWS_PRIVATE_MEDIA_LOCATION = '%s/media/private'%(ENVIRONMENT)
+PRIVATE_FILE_STORAGE = 'cms.storage_backends.PrivateMediaStorage'
+
+if ENVIRONMENT == 'heroku':    
+    STATICFILES_STORAGE = 'cms.storage_backends.StaticStorage'
+    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

@@ -107,6 +107,8 @@ ENV/
 __pycache__/
 static/*
 
+.DS_Store
+
 .env
 db.sqlite3
 

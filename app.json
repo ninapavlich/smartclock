@@ -2,5 +2,19 @@
   "name": "Django IOT Smart Clock CMS for Heroku",
   "description": "IOT Smart Clock CMS for Django",
   "repository": "https://github.com/ninapavlich/smartclock",
-  "keywords": ["Django", "Heroku"]
+  "keywords": ["Django", "Heroku"],
+  "env": {
+    "SECRET_KEY": {
+      "description": "A secret key for encryption used on this application.",
+      "generator": "secret"
+    },
+    "ENVIRONMENT":{
+      "description": "A secret key for encryption used on this application.",
+      "value": "heroku"
+    },
+    "AWS_ACCESS_KEY_ID":{},
+    "AWS_SECRET_ACCESS_KEY":{},
+    "AWS_STORAGE_BUCKET_NAME":{},
+
+  }
 }
