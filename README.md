@@ -28,9 +28,11 @@ To bootstrap Django:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/ninapavlich/smartclock/blob/master)
 
-After your application has deployed, run the following command through the Heroku CLI and follow the prompts to create an initial user:
+After your application has deployed, run the following commands through the Heroku CLI and follow the prompts:
 
+	> heroku run python manage.py migrate
 	> heroku run python manage.py createsuperuser
+	> heroku ps:scale web=1
 
 
 # Manual Heroku Configuration:
