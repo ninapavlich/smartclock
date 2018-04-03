@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'cms.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 if ENVIRONMENT == 'local':
     DATABASES = {
-        'default': dj_database_url.config(default=env('DATABSE_URL'))
+        'default': dj_database_url.config(default=env('DATABASE_URL'))
     }
 else:
     DATABASES = {
