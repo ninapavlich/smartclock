@@ -41,3 +41,15 @@ After your application has deployed, run the following commands through the Hero
 	> heroku addons:create heroku-postgresql:hobby-dev
 	> heroku config:set ENVIRONMENT='heroku' AWS_ACCESS_KEY_ID='REPLACEME' AWS_SECRET_ACCESS_KEY='REPLACEME+m/Knu1Hlw8SBp' AWS_STORAGE_BUCKET_NAME='REPLACEME' SECRET_KEY='REPLACEME'
 	> git push heroku master
+
+
+#Front-End 
+To bootstrap the front end GUI:
+
+	> cd frontend/apps/gui
+	> npm install
+	> npm start
+
+To build the front end code to be deployed:
+
+	> npm run build

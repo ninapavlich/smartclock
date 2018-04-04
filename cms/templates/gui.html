@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Smart Clock GUI</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}?v=2">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}?v=2">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}?v=2">
+        <link rel="manifest" href="{% static 'site.webmanifest' %}?v=2">
+        <link rel="mask-icon" href="{% static 'safari-pinned-tab.svg' %}?v=2" color="#e2da53">
+        <meta name="msapplication-TileColor" content="#e2da53">
+        <meta name="theme-color" content="#ffffff">
+
+
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+    </head>
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+        <my-app data-api-root="{{API_ROOT}}" data-api-key="{{API_KEY}}">Loading...</my-app>
+
+        <script type="text/javascript" src="{% static 'js/polyfills.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/vendor.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+
+        
+    </body>
+</html>

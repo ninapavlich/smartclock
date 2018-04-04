@@ -76,7 +76,7 @@ ROOT_URLCONF = 'cms.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(PROJECT_ROOT, 'iot/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'apps/iot/templates'), os.path.join(BASE_DIR, 'cms/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -96,7 +96,10 @@ WSGI_APPLICATION = 'cms.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 if ENVIRONMENT == 'local':
     DATABASES = {
-        'default': dj_database_url.config(default=env('DATABASE_URL'))
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
 else:
     DATABASES = {
@@ -135,11 +138,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-STATIC_URL = '/static/'
-STATIC_ROOT = env('STATIC_ROOT', default=os.path.join(PROJECT_ROOT, "static"))
 
+STATIC_ROOT = env('STATIC_ROOT', default=os.path.join(PROJECT_ROOT, "static"))
 MEDIA_ROOT = env("MEDIA_ROOT", default=os.path.join(PROJECT_ROOT, 'uploads'))
-MEDIA_URL = env("MEDIA_URL", default='/uploads/')
 
 
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
@@ -150,16 +151,28 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 AWS_STATIC_LOCATION = '%s/static'%(ENVIRONMENT)
+AWS_MEDIA_LOCATION = '%s/media'%(ENVIRONMENT)
 
-AWS_PUBLIC_MEDIA_LOCATION = '%s/media/public'%(ENVIRONMENT)
-DEFAULT_FILE_STORAGE = 'cms.storage_backends.PublicMediaStorage'
 
-AWS_PRIVATE_MEDIA_LOCATION = '%s/media/private'%(ENVIRONMENT)
-PRIVATE_FILE_STORAGE = 'cms.storage_backends.PrivateMediaStorage'
+if ENVIRONMENT == 'local':   
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/uploads/'
 
-if ENVIRONMENT == 'heroku':    
-    STATICFILES_STORAGE = 'cms.storage_backends.StaticStorage'
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    PRIVATE_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'    
+
+else:
+
     STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
+    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
+    
+    STATICFILES_STORAGE = 'cms.storage_backends.StaticStorage'
+    DEFAULT_FILE_STORAGE = 'cms.storage_backends.PublicMediaStorage'
+    PRIVATE_FILE_STORAGE = 'cms.storage_backends.PrivateMediaStorage'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'frontend', 'static'),
+)
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
