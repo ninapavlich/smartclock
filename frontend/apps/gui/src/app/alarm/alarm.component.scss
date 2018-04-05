@@ -1,0 +1,16 @@
+:host{
+}
+input{
+  width:100%;
+  max-width: 100%;
+}
+input.nickname{
+  border-color:rgba(0,0,0,0);
+  border:1px solid;
+  &:focus{
+    border-color:rgba(0,0,0,1);
+  }
+}
+input.time{
+  font-size: 3rem;
+}
