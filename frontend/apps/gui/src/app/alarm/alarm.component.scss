@@ -4,13 +4,26 @@ input{
   width:100%;
   max-width: 100%;
 }
-input.nickname{
-  border-color:rgba(0,0,0,0);
-  border:1px solid;
+input.shy{
+  background-color: transparent;
+  border:1px solid rgba(255, 255, 255, 0);
+
   &:focus{
-    border-color:rgba(0,0,0,1);
+    border-color:rgba(255, 255, 255, 1);
   }
 }
 input.time{
   font-size: 3rem;
+}
+
+h6{
+  text-transform: uppercase;
+  font-size: 0.75em;
+}
+small{
+  opacity: 0.5;
+}
+
+.custom-control.toggle{
+
 }
