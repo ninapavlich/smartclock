@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'alarm',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./alarm.component.scss']
 })
 export class AlarmComponent implements OnInit {
+
+  @Input('id') id: string;
 
   constructor() {
     // Do stuff

@@ -1,0 +1,26 @@
+<div class="ready-{{is_ready_to_play}} loading-{{is_audio_loading}} has-sound-{{has_sound}} has-remote-{{has_remote_audio}} has-picked-{{has_picked_audio}}">
+  
+  <div class="picker">
+    <div class="custom-file">
+      <input type="file" class="custom-file-input" id="id_alarm-{{id}}-sound" name="alarm-{{id}}-sound" #audioinput (change)="onAudioPicked($event)">
+      <label class="custom-file-label" for="id_sound">Sound</label>
+    </div>
+  </div>
+
+  <div class="player">
+    <audio #audioplayer src="{{src}}" (loaded)="onAudioLoaded()"  (ended)="onAudioEnded()" preload="metadata"></audio> 
+  </div>
+
+  <div *ngIf="has_sound" class="controls">
+
+    <button class="btn btn-outline" (click)="play()" *ngIf="!play_requested">
+      <i class="material-icons">audiotrack</i> play {{this.audioFileName}}
+    </button>
+    <button class="btn btn-outline" (click)="pause()" *ngIf="play_requested">
+      <i class="material-icons">audiotrack</i> pause {{this.audioFileName}}
+    </button>
+
+    <button type="button" class="btn btn-outline-warning" (click)="clearSound()"><i class="material-icons">close</i> clear</button>
+
+  </div>
+</div>

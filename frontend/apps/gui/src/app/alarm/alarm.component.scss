@@ -17,11 +17,13 @@ input.time{
 }
 
 h6{
-  text-transform: uppercase;
-  font-size: 0.75em;
+  opacity: 0.25;
+  padding:0.5em 0;
+  margin:0;
 }
 small{
   opacity: 0.5;
+  letter-spacing: 0.05em;
 }
 
 .custom-control.toggle{
