@@ -1,4 +1,13 @@
 :host{
+
+}
+
+@keyframes barberpole {
+  from { background-position: 0 0; }
+  to   { background-position: 60px 30px; }
+}
+.alarm-container{
+  position: relative;
 }
 input{
   width:100%;
@@ -12,20 +21,65 @@ input.shy{
     border-color:rgba(255, 255, 255, 1);
   }
 }
-input.time{
+.time{
   font-size: 3rem;
 }
-
+.active{
+  i{
+    font-size: 3rem;    
+  }
+ 
+}
+a{
+  i{
+    position: relative;
+    top:0.25em;
+  }
+  &:hover{
+    text-decoration: none;
+  }
+}
 h6{
-  opacity: 0.25;
   padding:0.5em 0;
   margin:0;
 }
-small{
-  opacity: 0.5;
-  letter-spacing: 0.05em;
+.label{
+  width: 100%;
 }
 
 .custom-control.toggle{
 
+}
+
+.loading-indication{
+  position: absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+  background-size: 30px 30px;
+  background-image: linear-gradient(
+    45deg, 
+    rgba(black, 0.1)  25%, 
+    transparent       25%, 
+    transparent       50%, 
+    rgba(black, 0.1)  50%, 
+    rgba(black, 0.1)  75%, 
+    transparent       75%, 
+    transparent
+  );  
+  animation: barberpole 0.5s linear infinite;
+
+  font-size: 0.7em;
+  display: none;
+}
+.loading-true .loading-indication{
+  display: block;
+}
+
+.delete{
+  transition: opacity 0.15s ease-in-out;
+}
+.loading-true .delete{
+  opacity: 0;
+  pointer-events: none;
 }

@@ -1,7 +1,11 @@
 <ul class="list-unstyled">
-  <li><alarm id="1"></alarm></li>
-  <li><alarm id="2"></alarm></li>
-  <li><alarm id="3"></alarm></li>
-  <li><alarm id="4"></alarm></li>
-  <li><alarm id="5"></alarm></li>
+  <li *ngFor="let alarm of alarmsService.alarms"><alarm [alarm]="alarm" (playbackchange)="onSoundpickerPlaybackChange($event)" #alarms></alarm></li>
+  <li>
+    <div class="p-4 text-white bg-dark border-bottom border-secondary text-center">
+      <button class="btn btn-lg btn-outline-secondary" (click)="addAlarm()">
+        <i class="material-icons">add</i>
+        <span>Add an Alarm</span>
+      </button>
+    </div>
+  </li>
 </ul>

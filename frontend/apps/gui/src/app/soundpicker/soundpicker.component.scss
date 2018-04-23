@@ -1,5 +1,97 @@
+@keyframes fadeIn { 
+  from { opacity: 0.05; } 
+}
+
+.picker-container{
+  min-height: 150px;
+}
 .has-sound-true{
   .picker{
-    display:none;
+    
+  }
+}
+
+a{
+  .material-icons{
+    position: relative;
+    top: 0.25em;
+  }
+}
+
+.playpause{
+  font-size: 4em;
+
+  width:1em;
+  height:1em;
+  background-color: transparent;
+  position: relative;
+  margin: 0;
+  padding: 0;
+
+
+  i{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width:100%;
+    height:100%;
+    font-size: 1em;
+    border-radius: 50%;
+    border:1px solid #fff;
+    color:#fff;
+  }
+  svg{
+    position: absolute;
+    fill:#fff;
+    opacity: 0.3;
+    left: -150%;
+    top: -20%;
+    width: 400%;
+    height: 140%;
+  }
+  &.playing-true{
+    svg{
+      animation: fadeIn 2000ms infinite alternate;
+    }
+  }
+}
+.custom-file{
+  position: relative;
+}
+
+.has-sound-true .filepicker{
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+
+    i{
+      position: absolute;
+      right:0;
+      top:0;
+      padding: 0.375rem 0.25rem;
+    }
+}
+.has-sound-false{
+  .alarm-sound-label{
+    opacity: 0;
+  }
+  .filepicker{
+      position: absolute;
+      right: 0;
+      top: 0;
+      margin: 0;
+      width: 100%;
+      height: 150px;
+      z-index: 100;
+      text-align: center;
+
+      i{
+        font-size: 0.5em;
+        line-height: 200%;
+      }
   }
 }

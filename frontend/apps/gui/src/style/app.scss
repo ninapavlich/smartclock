@@ -1,6 +1,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 body{
   font-weight: lighter;
+  font-size: 18px;
 }
 
 .btn{
@@ -12,21 +13,46 @@ body{
     letter-spacing: 0.05em;
   }
 }
-h1, h2, h3, h4, h5, h6, input{
+h1, h2, h3, h4, h5, h6, input, label > span{
   font-weight: lighter;
   letter-spacing: 0.05em;
 }
-h2, h4, h6{
-  text-transform: uppercase;
+.label{
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.85em;
+  margin:0;
+  letter-spacing: 0.05em;
 }
-
+label.placeholder{
+  position: relative;
+  width: 100%;
+  span{
+    position: absolute;
+    padding: 0 0.25em;
+    left: -0.5em;
+    top: 0;
+    background-color: $gray-800;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.65);
+  }
+  input:focus + span,
+  input.value-true + span{
+    font-size: 0.85rem;
+    top: -0.5em;
+    left: 0.5rem;
+  }
+}
 input[type="time"]  {
   &::-webkit-clear-button,
   &::-ms-clear{
     display: none; 
   }
 }
-
+small{
+  font-weight: lighter;
+  opacity: 0.8;
+  letter-spacing: 0.05em;
+}
 .toggle-label.custom-checkbox{
 
   padding:0.5em;
@@ -42,11 +68,21 @@ input[type="time"]  {
     &:after, &:before{
       display:none;
     }
+
+    .on{
+      display: none;
+    }
   }
   .custom-control-input:checked ~ .custom-control-label{
     opacity: 1;
     &:after, &:before{
       display:none;
+    }
+    .on{
+      display: block;
+    }
+    .off{
+      display: none;
     }
   }
 }
@@ -54,7 +90,7 @@ input[type="time"]  {
 
 .toggle.custom-checkbox{
 
-  padding:0.5em 0.5em 0.5em 3.5em;
+  padding:0.5em 0.5em 0.5em 4em;
   cursor: pointer;
 
   .custom-control-label{
@@ -66,6 +102,7 @@ input[type="time"]  {
     span{
       opacity: 0.25;
       transition: opacity 0.15s ease-in-out;
+      margin-left: -0.25em;
     }
 
     &:before{
@@ -73,11 +110,12 @@ input[type="time"]  {
       border-radius: 1em;
       height: 1.5em;
       top: 0.4em;
+      left: 0.5em;
       background-color: #000;
       opacity: 0.4;
     }
     &:after{
-      left: 0.25em;
+      left: 0.75em;
       border-radius: 100%;
       top: 0.65em;
       background-color: #fff;
@@ -94,10 +132,11 @@ input[type="time"]  {
     span{
       opacity: 1;  
     }
+
     &:after{
       background-image:none;
       opacity: 1;
-      left: 1.75em;
+      left: 2.25em;
     }
     &:before{
       background-color: #000;
@@ -107,6 +146,9 @@ input[type="time"]  {
   &.vertical{
 
   }
+}
+.custom-control-input:focus ~ .custom-control-label::before{
+  box-shadow: none !important;
 }
 
 input{

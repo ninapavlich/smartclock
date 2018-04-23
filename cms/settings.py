@@ -36,10 +36,24 @@ if ENVIRONMENT == 'heroku':
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
-    ALLOWED_HOSTS = ['.herokuapp.com']
+    ALLOWED_HOSTS = [ env('APP_HOST_NAME') ]
+    CORS_ORIGIN_WHITELIST = (
+        env('APP_HOST_NAME')
+    )
+    CSRF_TRUSTED_ORIGINS = (
+        env('APP_HOST_NAME')
+    )
 
 if DEBUG:
-    INTERNAL_IPS = ['127.0.0.1']
+    # INTERNAL_IPS = ['127.0.0.1']
+    CORS_ORIGIN_WHITELIST = (
+        'localhost:8080',
+        '127.0.0.1:8000'
+    )
+    CSRF_TRUSTED_ORIGINS = (
+        'localhost:8080',
+        '127.0.0.1:8000'
+    )
 
 
 INSTALLED_APPS = [
@@ -65,6 +79,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -140,7 +155,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_ROOT = env('STATIC_ROOT', default=os.path.join(PROJECT_ROOT, "static"))
-MEDIA_ROOT = env("MEDIA_ROOT", default=os.path.join(PROJECT_ROOT, 'uploads'))
+MEDIA_ROOT = env("MEDIA_ROOT", default=os.path.join(BASE_DIR, 'uploads'))
+
 
 
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
@@ -186,6 +202,4 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
-
-CORS_ORIGIN_ALLOW_ALL = True
 

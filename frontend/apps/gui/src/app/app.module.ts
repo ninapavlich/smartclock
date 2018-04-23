@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AlarmComponent } from './alarm/alarm.component';
 import { SoundPickerComponent } from './soundpicker/soundpicker.component';
-import { ApiService } from './shared';
+import { AlarmsService } from './shared/alarm.service';
 import { routing } from './app.routing';
 
 import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
@@ -26,7 +26,7 @@ import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
     SoundPickerComponent
   ],
   providers: [
-    ApiService
+    AlarmsService
   ],
   bootstrap: [AppComponent]
 })

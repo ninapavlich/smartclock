@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRoutes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { ApiService } from './shared';
+import { AlarmsService } from './shared/alarm.service';
 import { AppComponent } from './app.component';
 
 describe('App', () => {
@@ -11,7 +11,7 @@ describe('App', () => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [AppComponent],
-      providers: [ApiService, provideRoutes([])]
+      providers: [AlarmsService, provideRoutes([])]
     });
   });
 

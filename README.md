@@ -33,7 +33,7 @@ After your application has deployed, run the following commands through the Hero
 	> heroku run python manage.py migrate
 	> heroku run python manage.py createsuperuser
 	> heroku ps:scale web=1
-
+	> heroku config:set APP_HOST_NAME=my-heroku-app-name.herokuapp.com
 
 # Manual Heroku Configuration:
 	

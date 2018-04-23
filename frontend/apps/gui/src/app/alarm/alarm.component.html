@@ -1,80 +1,153 @@
-<div class="p-4 text-white bg-dark border-bottom border-secondary">
-  <input type="hidden" name="id" value="" />
-  
-  
-  <div class="row">
-    <div class="col-sm-11">
-      <input type="text" placeholder="Alarm nickname" id="id_alarm-{{id}}-nickname" name="alarm-{{id}}-nickname" class="text-light shy" />
-    </div>
-   
-    <div class="col-sm-1 text-right">
-      <button type="button" class="btn btn-outline-warning"><i class="material-icons">close</i></button>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-sm-5">
-      <input type="time" placeholder="Time" id="id_alarm-{{id}}-time" name="alarm-{{id}}-time" class="time text-white" step="60" value="22:53:05"/>
-    </div>
+<div class="alarm-container px-4 pb-4 pt-1  text-white bg-dark border-bottom border-secondary loading-{{loading}}">
     
-    <div class="col-sm-5">
+    <div class="row text-right">
+      <div class="col-sm-12">
+        <a href="#" class="delete text-secondary" (click)="deleteAlarm()" >delete <i class="material-icons">close</i></a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-5">
+        <label class="placeholder" for="id_alarm-{{pk}}-name">
+          <input 
+            type="text" class="text-light shy value-{{has_name}}"
+            id="id_alarm-{{pk}}-name" name="name" 
+            [value]="name" #name_input 
+            (keyup.enter)="updateName(name_input.value)" 
+            (blur)="updateName(name_input.value)"/>
+          <span>Alarm Nickname</span>
+        </label>
+
+
+        <label class="placeholder time mt-3" for="id_alarm-{{pk}}-time" >
+          <input 
+            type="time" step="60" required
+            class="text-white text-light shy value-{{has_name}}" 
+            id="id_alarm-{{pk}}-time" name="time" 
+            [value]="time" #time_input
+            (keyup.enter)="updateTime(time_input.value)" 
+            (blur)="updateTime(time_input.value)"/>
+          <span>Alarm Time</span>
+        </label>
+
+       
+      </div>
       
-      <soundpicker src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></soundpicker> 
-    </div>
-    <div class="col-sm-2">
-      <div class="custom-control custom-checkbox toggle vertical">
-        <input type="checkbox" class="custom-control-input" id="id_alarm-{{id}}-active" name="alarm-{{id}}-active">
-        <label class="custom-control-label" for="id_alarm-{{id}}-active"><span>Active</span></label>
+      <div class="col-sm-5">
+        <soundpicker 
+          [src]="sound_url" [pk]="pk" #soundpicker_input required
+          (playbackchange)="onSoundpickerPlaybackChange($event)"
+          (sourcechange)="onSoundpickerSourceChange($event)" >
+        </soundpicker> 
+      </div>
+      <div class="col-sm-2">
+        
+        <div class="clearfix">
+          <div class="custom-control custom-checkbox toggle-label text-center active my-3">
+            <input 
+              id="id_alarm-{{pk}}-active" name="active"  
+              type="checkbox" class="custom-control-input" 
+              [checked]="active" #active_input>
+            <label class="custom-control-label" for="id_alarm-{{pk}}-active">
+              <span class="on">
+                <i class="material-icons">alarm_on</i>
+                <span class="label d-block">Alarm On</span>
+              </span>
+              <span class="off">
+                <i class="material-icons">alarm_off</i>
+                <span class="label d-block">Alarm Off</span>
+              </span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="my-4 text-center">
-    <h6 class="d-inline">Repeat</h6>
+    <div class="my-4 text-center">
+      
 
-    <div class="custom-control custom-checkbox d-inline toggle-label">
-      <input type="checkbox" class="custom-control-input" id="id_alarm-{{id}}-repeat_mon" name="alarm-{{id}}-repeat_mon">
-      <label class="custom-control-label" for="id_alarm-{{id}}-repeat_mon"><span>MON</span></label>
-    </div>
+      <div class="">
+        <label class="d-inline label">Repeat</label>
 
-    <div class="custom-control custom-checkbox d-inline toggle-label">
-      <input type="checkbox" class="custom-control-input" id="id_alarm-{{id}}-repeat_tue" name="alarm-{{id}}-repeat_tue">
-      <label class="custom-control-label" for="id_alarm-{{id}}-repeat_tue"><span>TUE</span></label>
-    </div>
+        <div class="custom-control custom-checkbox d-inline toggle-label">
+          <input type="checkbox" class="custom-control-input" 
+            id="id_alarm-{{pk}}-repeat_mon" name="repeat_mon" 
+            [checked]="repeat_mon" #repeat_mon_input>
+          <label class="custom-control-label" for="id_alarm-{{pk}}-repeat_mon">
+            <span>MON</span>
+          </label>
+        </div>
 
-    <div class="custom-control custom-checkbox d-inline toggle-label">
-      <input type="checkbox" class="custom-control-input" id="id_alarm-{{id}}-repeat_wed" name="alarm-{{id}}-repeat_wed">
-      <label class="custom-control-label" for="id_alarm-{{id}}-repeat_wed"><span>WED</span></label>
-    </div>
+        <div class="custom-control custom-checkbox d-inline toggle-label">
+          <input type="checkbox" class="custom-control-input" 
+            id="id_alarm-{{pk}}-repeat_tue" name="repeat_tue" 
+            [checked]="repeat_tue" #repeat_tue_input>
+          <label class="custom-control-label" for="id_alarm-{{pk}}-repeat_tue">
+            <span>TUE</span>
+          </label>
+        </div>
 
-    <div class="custom-control custom-checkbox d-inline toggle-label">
-      <input type="checkbox" class="custom-control-input" id="id_alarm-{{id}}-repeat_thu" name="alarm-{{id}}-repeat_thu">
-      <label class="custom-control-label" for="id_alarm-{{id}}-repeat_thu"><span>THU</span></label>
-    </div>
+        <div class="custom-control custom-checkbox d-inline toggle-label">
+          <input type="checkbox" class="custom-control-input" 
+            id="id_alarm-{{pk}}-repeat_wed" name="repeat_wed" 
+            [checked]="repeat_wed" #repeat_wed_input>
+          <label class="custom-control-label" for="id_alarm-{{pk}}-repeat_wed">
+            <span>WED</span>
+          </label>
+        </div>
 
-    <div class="custom-control custom-checkbox d-inline toggle-label">
-      <input type="checkbox" class="custom-control-input" id="id_alarm-{{id}}-repeat_fri" name="alarm-{{id}}-repeat_fri">
-      <label class="custom-control-label" for="id_alarm-{{id}}-repeat_fri"><span>FRI</span></label>
-    </div>
+        <div class="custom-control custom-checkbox d-inline toggle-label">
+          <input type="checkbox" class="custom-control-input" 
+            id="id_alarm-{{pk}}-repeat_thu" name="repeat_thu" 
+              [checked]="repeat_thu" #repeat_thu_input>
+          <label class="custom-control-label" for="id_alarm-{{pk}}-repeat_thu">
+            <span>THU</span>
+          </label>
+        </div>
 
-    <div class="custom-control custom-checkbox d-inline toggle-label">
-      <input type="checkbox" class="custom-control-input" id="id_alarm-{{id}}-repeat_sat" name="alarm-{{id}}-repeat_sat">
-      <label class="custom-control-label" for="id_alarm-{{id}}-repeat_sat"><span>SAT</span></label>
-    </div>
+        <div class="custom-control custom-checkbox d-inline toggle-label">
+          <input type="checkbox" class="custom-control-input" 
+            id="id_alarm-{{pk}}-repeat_fri" name="repeat_fri" 
+              [checked]="repeat_fri" #repeat_fri_input>
+          <label class="custom-control-label" for="id_alarm-{{pk}}-repeat_fri">
+            <span>FRI</span>
+          </label>
+        </div>
 
-    <div class="custom-control custom-checkbox d-inline toggle-label">
-      <input type="checkbox" class="custom-control-input" id="id_alarm-{{id}}-repeat_sun" name="alarm-{{id}}-repeat_sun">
-      <label class="custom-control-label" for="id_alarm-{{id}}-repeat_sun"><span>SUN</span></label>
-    </div>
+        <div class="custom-control custom-checkbox d-inline toggle-label">
+          <input type="checkbox" class="custom-control-input" 
+            id="id_alarm-{{pk}}-repeat_sat" name="repeat_sat" 
+            [checked]="repeat_sat" #repeat_sat_input>
+          <label class="custom-control-label" for="id_alarm-{{pk}}-repeat_sat">
+            <span>SAT</span>
+          </label>
+        </div>
 
-    <div class="custom-control custom-checkbox d-inline toggle">
-        <input type="checkbox" class="custom-control-input" id="id_alarm-{{id}}-allow_snooze" name="alarm-{{id}}-allow_snooze">
-        <label class="custom-control-label" for="id_alarm-{{id}}-allow_snooze"><span>Snoozable</span></label>
+        <div class="custom-control custom-checkbox d-inline toggle-label">
+          <input type="checkbox" class="custom-control-input" 
+            id="id_alarm-{{pk}}-repeat_sun" name="repeat_sun" 
+            [checked]="repeat_sun" #repeat_sun_input>
+          <label class="custom-control-label" for="id_alarm-{{pk}}-repeat_sun">
+            <span>SUN</span>
+          </label>
+        </div>
+
+        <div class="custom-control custom-checkbox d-inline toggle">
+            <input type="checkbox" class="custom-control-input" 
+              id="id_alarm-{{pk}}-allow_snooze" name="allow_snooze" 
+              [checked]="allow_snooze" #allow_snooze_input>
+            <label class="custom-control-label" for="id_alarm-{{pk}}-allow_snooze">
+              <span>Snoozable</span>
+            </label>
+          </div>
+        </div>
       </div>
 
-  </div>
+    <div class="text-center pb-2">
+      <small class="text-light" *ngIf="last_synchronized">Last synchronized on {{last_synchronized | date:'medium'}}</small>
+      <small class="text-light" *ngIf="!last_synchronized">Not yet synchronized with clock</small>
+    </div>
 
-  <div class="text-center">
-    <small class="text-light">Last synchronized on 00:00 1/1/11</small>
-  </div>
+    <div class="loading-indication text-center">
+      <small>SAVING...</small>
+    </div>
 </div>

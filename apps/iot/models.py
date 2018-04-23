@@ -19,7 +19,7 @@ def alarm_song_upload_path(instance, filename):
     return os.path.join(settings.ENVIRONMENT, 'alarm', converted_filename)
 
 class Alarm(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
     
     sound = MD5FileField(upload_to=alarm_song_upload_path, blank=True, null=True, storage=get_storage(), md5_field='sound_md5')
     sound_md5 = models.CharField(max_length=255, blank=True, null=True)
