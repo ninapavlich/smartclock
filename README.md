@@ -39,7 +39,7 @@ After your application has deployed, run the following commands through the Hero
 	
 	> heroku create
 	> heroku addons:create heroku-postgresql:hobby-dev
-	> heroku config:set ENVIRONMENT='heroku' AWS_ACCESS_KEY_ID='REPLACEME' AWS_SECRET_ACCESS_KEY='REPLACEME+m/Knu1Hlw8SBp' AWS_STORAGE_BUCKET_NAME='REPLACEME' SECRET_KEY='REPLACEME'
+	> heroku config:set ENVIRONMENT='heroku' AWS_ACCESS_KEY_ID='REPLACEME' AWS_SECRET_ACCESS_KEY='REPLACEME' AWS_STORAGE_BUCKET_NAME='REPLACEME' SECRET_KEY='REPLACEME' APP_HOST_NAME=my-heroku-app-name.herokuapp.com
 	> git push heroku master
 
 

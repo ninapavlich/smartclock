@@ -20,6 +20,10 @@
     },
     "AWS_STORAGE_BUCKET_NAME":{
       "description": "AWS S3 bucket name."
+    },
+    "APP_HOST_NAME":{
+      "description": "<App Name as entered above>.herokuapp.com. For Example: my-heroku-app-name.herokuapp.com"
     }
+
   }
 }
