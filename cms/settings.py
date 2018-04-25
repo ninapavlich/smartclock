@@ -43,6 +43,9 @@ if ENVIRONMENT == 'heroku':
     CSRF_TRUSTED_ORIGINS = (
         env('APP_HOST_NAME')
     )
+    APP_SCOPE = env('APP_HOST_NAME').split('.')[0]
+else:
+    APP_SCOPE = env('APP_SCOPE', default='smartclock')
 
 if DEBUG:
     # INTERNAL_IPS = ['127.0.0.1']
