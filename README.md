@@ -28,18 +28,20 @@ To bootstrap Django:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/ninapavlich/smartclock/blob/master)
 
-After your application has deployed, run the following commands through the Heroku CLI and follow the prompts:
+When configuring the fields, be sure to take note of the App Name, as you will be using this in the next steops. 
 
-	> heroku run python manage.py migrate
-	> heroku run python manage.py createsuperuser
+After your application has deployed, run the following commands through the command line Heroku CLI and follow the prompts:
+
+	> heroku run python manage.py migrate --app=replace-with-app-name
+	> heroku run python manage.py createsuperuser --app=replace-with-app-name
+	> heroku run python manage.py drf_create_token ninapav --app=replace-with-app-name
 	> heroku ps:scale web=1
-	> heroku config:set APP_HOST_NAME=my-heroku-app-name.herokuapp.com
 
 # Manual Heroku Configuration:
 	
 	> heroku create
 	> heroku addons:create heroku-postgresql:hobby-dev
-	> heroku config:set ENVIRONMENT='heroku' AWS_ACCESS_KEY_ID='REPLACEME' AWS_SECRET_ACCESS_KEY='REPLACEME' AWS_STORAGE_BUCKET_NAME='REPLACEME' SECRET_KEY='REPLACEME' APP_HOST_NAME=my-heroku-app-name.herokuapp.com
+	> heroku config:set ENVIRONMENT='heroku' AWS_ACCESS_KEY_ID='REPLACEME' AWS_SECRET_ACCESS_KEY='REPLACEME' AWS_STORAGE_BUCKET_NAME='REPLACEME' SECRET_KEY='REPLACEME' APP_HOST_NAME='my-heroku-app-name.herokuapp.com'
 	> git push heroku master
 
 
