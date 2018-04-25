@@ -1,7 +1,10 @@
-<ul class="list-unstyled">
+<div class="text-center p-3">
+  <h3 class="mb-0">You have {{alarmsService.alarms.length}} alarms</h3>
+</div>
+<ul class="list-unstyled m-0">
   <li *ngFor="let alarm of alarmsService.alarms"><alarm [alarm]="alarm" (playbackchange)="onSoundpickerPlaybackChange($event)" #alarms></alarm></li>
   <li>
-    <div class="p-4 text-white bg-dark border-bottom border-secondary text-center">
+    <div class="p-4 text-white bg-dark text-center">
       <button class="btn btn-lg btn-outline-secondary" (click)="addAlarm()">
         <i class="material-icons">add</i>
         <span>Add an Alarm</span>

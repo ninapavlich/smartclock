@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Inject, ElementRef } from '@angular/core';
+import { AlarmsService } from './shared/alarm.service';
 
 import '../style/app.scss';
 
@@ -8,7 +9,8 @@ import '../style/app.scss';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  constructor() {
-    
+  constructor(@Inject(ElementRef) private elementRef: ElementRef, alarmsService: AlarmsService) {
+    let nativeElement = elementRef.nativeElement;
+    alarmsService.init(nativeElement.getAttribute('data-api-root'), nativeElement.getAttribute('data-auth-header'));
   }
 }

@@ -6,7 +6,7 @@
       <label class="placeholder" for="id_alarm-{{pk}}-filename">
         <input 
           type="text" class="text-light shy value-{{has_sound}}"
-          [value]="audioFileName" />
+          [value]="audioFileName" readonly tabindex="-1" />
         <span class="alarm-sound-label">Alarm Sound</span>
       </label>
 
@@ -49,7 +49,8 @@
         <div *ngIf="has_sound">
           <i class="material-icons">create</i>
         </div>
-        <input type="file" class="custom-file-input" id="id_alarm-{{pk}}-sound" name="sound" #audioinput (change)="onAudioPicked($event)">
+        <input type="file" class="custom-file-input" id="id_alarm-{{pk}}-sound" name="sound" #audioinput (change)="onAudioPicked($event)" accept="audio/mpeg, audio/wav, audio/mp3">
+        <span class="focus"><span>Alarm Sound</span></span>
       </label>
       
     </div>

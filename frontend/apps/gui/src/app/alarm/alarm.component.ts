@@ -30,7 +30,8 @@ export class AlarmComponent implements OnInit {
   name:string = "";
   has_name:boolean = false;
   active:boolean = true;
-  time:Date = null;
+  time:string = null;
+  time_date:Date = null;
   sound_url:string = "";
   sound:File = null;
   repeat_mon:boolean = true;
@@ -56,7 +57,8 @@ export class AlarmComponent implements OnInit {
 
     this.name = this.alarm.name;
     this.has_name = this.name != "";
-    // this.time = this.alarm.time;
+    this.time = this.alarm.time;
+    this.time_date = this.dateFromTime(this.time);
     this.sound_url = this.alarm.sound_url;
     this.active = this.alarm.active;
     this.allow_snooze = this.alarm.allow_snooze;
@@ -77,10 +79,9 @@ export class AlarmComponent implements OnInit {
 
   updateModel(debug_caller:string){
     this.alarm.name = this.name;
-    // this.alarm.time = this.time;
+    this.alarm.time = this.time;
     if(this.sound){
       this.alarm.sound = this.sound;  
-      console.log("ADDING SOUND "+this.sound)
     }
     this.alarm.active = this.active;
     this.alarm.allow_snooze = this.allow_snooze;
@@ -101,9 +102,9 @@ export class AlarmComponent implements OnInit {
     this.updateModel("Alarm.updateName()");
   }
   updateTime(value:any){
-    console.log("TODO: parse time from "+value)
-    window['test_time'] = value;
-    // this.time = value;
+    this.time = value;
+    this.time_date = this.dateFromTime(this.time);
+    this.updateModel("Alarm.updateTime()");
   }
   deleteAlarm(){
     this.alarmsService.deleteAlarm(this.pk)
@@ -118,6 +119,52 @@ export class AlarmComponent implements OnInit {
     if(this.sound == src){ return; }
     this.sound = src;
     this.updateModel("Alarm.onSoundpickerSourceChange()");
+  }
+  toggleActive(){
+    this.active = !this.active;
+    this.updateModel("Alarm.toggleActive()");
+  }
+  toggleSnooze(){
+    this.allow_snooze = !this.allow_snooze;
+    this.updateModel("Alarm.onSnoozeChange()");
+  }
+  toggleMon(){
+    this.repeat_mon = !this.repeat_mon;
+    this.updateModel("Alarm.toggleMon()");
+  }
+  toggleTue(){
+    this.repeat_tue = !this.repeat_tue;
+    this.updateModel("Alarm.toggleTue()");
+  }
+  toggleWed(){
+    this.repeat_wed = !this.repeat_wed;
+    this.updateModel("Alarm.toggleWed()");
+  }
+  toggleThu(){
+    this.repeat_thu = !this.repeat_thu;
+    this.updateModel("Alarm.toggleThu()");
+  }
+  toggleFri(){
+    this.repeat_fri = !this.repeat_fri;
+    this.updateModel("Alarm.toggleFri()");
+  }
+  toggleSat(){
+    this.repeat_sat = !this.repeat_sat;
+    this.updateModel("Alarm.toggleSat()");
+  }
+  toggleSun(){
+    this.repeat_sun = !this.repeat_sun;
+    this.updateModel("Alarm.toggleSun()");
+  }
+
+  dateFromTime(time:string){
+    
+    let hours = parseInt(time.split(":")[0]);
+    let minutes = parseInt(time.split(":")[1]);
+    let now = new Date()
+    now.setHours(hours);
+    now.setMinutes(minutes);
+    return now;
   }
 
 }

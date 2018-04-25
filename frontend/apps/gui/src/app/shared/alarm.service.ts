@@ -4,8 +4,8 @@ import { Http, Headers } from '@angular/http';
 @Injectable()
 export class AlarmsService {
 
-  static api_root:string = 'http://127.0.0.1:8000';
-  static api_auth_header:string = 'Token c8e094d7b29e3798e4639610942bee1949275bfb';
+  static api_root:string = null;
+  static api_auth_header:string = null;
 
   @Output() loading = new EventEmitter<boolean>();
 
@@ -17,10 +17,15 @@ export class AlarmsService {
   constructor (
     private http: Http
   ) {
+    
+  }
+  public init(api_root, api_auth_header){
+    AlarmsService.api_root = api_root;
+    AlarmsService.api_auth_header = api_auth_header;
     this.loadAlarms();
+    clearInterval(this.polling_interval);
     this.polling_interval = setInterval(this.loadAlarms.bind(this), this.polling_interval_time);
   }
-
   static getAPIURL():string{
     return AlarmsService.api_root+"/api/alarms/";
   }
@@ -28,13 +33,14 @@ export class AlarmsService {
   static getAuthHeaders():Headers{
     let headers = new Headers();
     headers.set('Authorization', AlarmsService.api_auth_header);
-    headers.set('content-type', "application/json");
     return headers;
   }
   public loadAlarms() {
     this.loading.emit(true);
+    let headers = AlarmsService.getAuthHeaders()
+    headers.set('content-type', "application/json");
 
-    return this.http.get(AlarmsService.getAPIURL(), {headers: AlarmsService.getAuthHeaders()})
+    return this.http.get(AlarmsService.getAPIURL(), {headers: headers})
       .map(res => res.json()).subscribe(
         data => { 
           this.alarms = [];
@@ -42,7 +48,7 @@ export class AlarmsService {
           this.loading.emit(false);
          },
         err => { 
-          console.log(err); 
+          console.error(err); 
           this.loading.emit(false); 
         }
       );
@@ -150,13 +156,8 @@ export class AlarmService {
 
     if(this.name){ formData.append('name', this.name); }
     if(this.time){ formData.append('time', this.time);}
-    // if(this.sound){ formData.append('sound', this.sound); }
-    // if(this.sound){ formData.append('sound', this.sound, this.sound.name); }
-  
-    // formData.append("sound", "/Volumes/ARCHIVE/Example Images/Audio/Mariachi Guadalajara - Happy Birthday Original Mix.mp3");   
-
-    window['test_formData'] = formData;
-
+    if(this.sound){ formData.append('sound', this.sound, this.sound.name); }
+ 
     return formData;
 
   }
@@ -175,10 +176,9 @@ export class AlarmService {
     }
   }
   save(debug_caller:string) {
-    console.log(this+" SAVE from "+debug_caller)
+    // console.log("save: "+debug_caller)
     this.loading.emit(true);
     let headers = AlarmsService.getAuthHeaders();
-    // headers.set('Content-Type', "multipart/form-data");
     let data = this.toFormData()
     
 
@@ -191,7 +191,7 @@ export class AlarmService {
             this.loading.emit(false);
            },
           err => { 
-            console.log(err); 
+            console.error(err); 
             this.loading.emit(false); 
           }
         );
@@ -203,7 +203,7 @@ export class AlarmService {
             this.loading.emit(false);
            },
           err => { 
-            console.log(err); 
+            console.error(err); 
             this.loading.emit(false); 
           }
         );
@@ -211,14 +211,16 @@ export class AlarmService {
   }
   delete(){
     if(this.url){
-      return this.http.delete(this.url, {headers: AlarmsService.getAuthHeaders()})
+      let headers = AlarmsService.getAuthHeaders()
+      headers.set('content-type', "application/json");
+      return this.http.delete(this.url, {headers: headers})
         .map(res => res.json()).subscribe(
           data => { 
             data;
             this.loading.emit(false);
            },
           err => { 
-            console.log(err); 
+            console.error(err); 
             this.loading.emit(false); 
           }
         );

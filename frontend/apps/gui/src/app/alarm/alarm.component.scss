@@ -1,3 +1,4 @@
+@import "node_modules/bootstrap/scss/bootstrap";
 :host{
 
 }
@@ -19,10 +20,15 @@ input.shy{
 
   &:focus{
     border-color:rgba(255, 255, 255, 1);
+    border-color:$info;
   }
 }
 .time{
-  font-size: 3rem;
+  font-size: 1.5rem;  
+  @media(min-width: 576px){
+    font-size: 3rem;  
+  }
+  
 }
 .active{
   i{
@@ -76,8 +82,12 @@ h6{
   display: block;
 }
 
-.delete{
+.delete.text-secondary{
   transition: opacity 0.15s ease-in-out;
+  &:focus{
+    outline:0;
+    color:$info !important;
+  }
 }
 .loading-true .delete{
   opacity: 0;

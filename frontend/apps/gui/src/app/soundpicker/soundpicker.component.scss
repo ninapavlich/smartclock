@@ -1,3 +1,4 @@
+@import "node_modules/bootstrap/scss/bootstrap";
 @keyframes fadeIn { 
   from { opacity: 0.05; } 
 }
@@ -54,9 +55,20 @@ a{
       animation: fadeIn 2000ms infinite alternate;
     }
   }
+  &:focus{
+    box-shadow: none;
+    i{
+      color:$info;
+      border-color:$info;
+    }
+  }
 }
 .custom-file{
   position: relative;
+  input{
+    width: 100%;
+    cursor: pointer;
+  }
 }
 
 .has-sound-true .filepicker{
@@ -93,5 +105,38 @@ a{
         font-size: 0.5em;
         line-height: 200%;
       }
+  }
+}
+
+
+/* hack */
+
+.custom-file-input + .focus{
+  position: absolute;
+  width:100%;
+  height: 2.35em;
+  top:0;
+  left:0;
+  border-radius: 0.25rem;
+  border:1px solid rgba($info, 0);
+  
+
+  & > span{
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;    
+    padding: 0 0.25em;
+    background-color: $gray-800;
+    color: rgba(255, 255, 255, 0.65);
+    position: absolute;
+    top: -0.78em;
+    left: 0.48rem;
+
+  }
+}
+.custom-file-input:focus + .focus{
+  border:1px solid rgba($info, 1);
+  & > span{
+    color:$info;
+
   }
 }
