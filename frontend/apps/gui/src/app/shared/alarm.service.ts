@@ -11,6 +11,7 @@ export class AlarmsService {
 
   alarms = [];
 
+  public inited:boolean = false;
   polling_interval = null;
   polling_interval_time = 1000 * 60 * 10; //Every 10 minutes
 
@@ -26,6 +27,7 @@ export class AlarmsService {
     }
     AlarmsService.api_root = api_root;
     AlarmsService.api_auth_header = api_auth_header;
+    this.inited = true;
     this.loadAlarms();
     clearInterval(this.polling_interval);
     this.polling_interval = setInterval(this.loadAlarms.bind(this), this.polling_interval_time);
