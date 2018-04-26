@@ -26,5 +26,9 @@
       "value": "REPLACE ME.herokuapp.com"
     }
 
+  },
+  "scripts": {
+    "postdeploy": "heroku run python manage.py migrate"
   }
+
 }

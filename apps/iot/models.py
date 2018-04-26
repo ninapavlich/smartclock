@@ -15,7 +15,7 @@ def get_storage():
 def alarm_song_upload_path(instance, filename):
     filename, file_extension = os.path.splitext(filename)
     converted_filename = u'%s%s' % (filename.lower(), file_extension)
-    return os.path.join(settings.APP_SCOPE, settings.ENVIRONMENT, 'alarm', converted_filename)
+    return os.path.join('alarm', converted_filename)
 
 class Alarm(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)

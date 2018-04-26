@@ -3,6 +3,8 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.views.generic import TemplateView
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 from rest_framework.authtoken.models import Token
 
@@ -37,3 +39,4 @@ class GUITemplateView(UserPassesTestMixin, TemplateView):
             pass
 
         return context
+
