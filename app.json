@@ -28,7 +28,7 @@
 
   },
   "scripts": {
-    "postdeploy": "heroku run python manage.py migrate"
+    "postdeploy": "python manage.py migrate"
   }
 
 }
