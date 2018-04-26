@@ -20,6 +20,10 @@ export class AlarmsService {
     
   }
   public init(api_root, api_auth_header){
+    if(api_auth_header === ""){
+      alert("API key has not been properly provided to the application. Please verify that you have generated an auth token and are logged in. See the README.md for more details.")
+      return;
+    }
     AlarmsService.api_root = api_root;
     AlarmsService.api_auth_header = api_auth_header;
     this.loadAlarms();

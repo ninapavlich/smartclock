@@ -3,7 +3,7 @@
 </div>
 <ul class="list-unstyled m-0">
   <li *ngFor="let alarm of alarmsService.alarms"><alarm [alarm]="alarm" (playbackchange)="onSoundpickerPlaybackChange($event)" #alarms></alarm></li>
-  <li>
+  <li *ngIf="alarmsService.api_auth_header">
     <div class="p-4 text-white bg-dark text-center">
       <button class="btn btn-lg btn-outline-secondary" (click)="addAlarm()">
         <i class="material-icons">add</i>
@@ -12,3 +12,5 @@
     </div>
   </li>
 </ul>
+
+
