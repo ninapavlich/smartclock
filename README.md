@@ -32,7 +32,6 @@ When configuring the fields, be sure to take note of the App Name, as you will b
 
 After your application has deployed, run the following commands through the command line Heroku CLI and follow the prompts:
 
-	> heroku run python manage.py migrate --app=<replace-with-app-name>
 	> heroku run python manage.py createsuperuser --app=<replace-with-app-name>
 	> heroku run python manage.py drf_create_token <replace-with-username> --app=<replace-with-app-name>
 	> heroku ps:scale web=1
