@@ -36,7 +36,7 @@ After your application has deployed, run the following commands through the comm
 	> heroku run python manage.py drf_create_token <replace-with-username> --app=<replace-with-app-name>
 	> heroku ps:scale web=1
 
-# Manual Heroku Configuration:
+## Manual Heroku Configuration:
 	
 	> heroku create
 	> heroku addons:create heroku-postgresql:hobby-dev
@@ -44,9 +44,9 @@ After your application has deployed, run the following commands through the comm
 	> git push heroku master
 
 
-## Tools
+# Tools
 
-### Postman Collection
+## Postman Collection
 
 To test API endpoints, a Postman API collection is included in the tools folder.
 
@@ -56,7 +56,7 @@ To test API endpoints, a Postman API collection is included in the tools folder.
 4. In the "Variables" tab, update the API_ROOT value with your Heroku URL (e.g. http://my-heroku-app-name.herokuapp.com) and the API_KEY value with your API key, which would be found at this path: /admin/authtoken/token/
 
 
-#Front-End 
+# Front-End 
 To bootstrap the front end GUI:
 
 	> cd frontend/apps/gui
