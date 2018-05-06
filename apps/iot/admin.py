@@ -13,12 +13,19 @@ class AlarmAdmin(admin.ModelAdmin):
                 ('sound', 'sound_md5'),
                 ('time','allow_snooze','active'),
                 ('repeat_mon','repeat_tue','repeat_wed','repeat_thu','repeat_fri','repeat_sat','repeat_sun'),
-                'last_synchronized'
+                ('next_alarm_time', 'last_stopped_time', 'last_snoozed_time')
             )
-      }),
-      
+      }),  
     )
-    readonly_fields = ['sound_md5']
-    list_display = ['name', 'time', 'allow_snooze', 'repeat_mon', 'repeat_tue', 'repeat_wed', 'repeat_thu', 'repeat_fri', 'repeat_sat', 'repeat_sun', 'active','last_synchronized']
+    search_fields = ['name', 'sound', 'sound_md5']
+    readonly_fields = ['sound_md5', 'next_alarm_time', 'last_stopped_time', 'last_snoozed_time']
+    list_display = ['name', 'time', 'allow_snooze', 'repeat_mon', 'repeat_tue', 'repeat_wed', 'repeat_thu', 'repeat_fri', 'repeat_sat', 'repeat_sun', 'active', 'next_alarm_time']
     list_filter = ['allow_snooze', 'active', 'repeat_mon', 'repeat_tue', 'repeat_wed', 'repeat_thu', 'repeat_fri', 'repeat_sat', 'repeat_sun']
 
+@admin.register(AlarmClient)
+class AlarmClientAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
+    list_display = ['name', 'slug', 'alarm_delay', 'last_synchronized']
+    
+    search_fields = ['name', 'slug']
+    readonly_fields = ['last_synchronized']

@@ -8,12 +8,12 @@ from django.views.generic import TemplateView
 from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
 
-from apps.iot.api import AlarmViewSet
+from apps.iot.api import AlarmViewSet, AlarmClientViewSet
 from .views import GUITemplateView
 
 router = routers.DefaultRouter()
 router.register(r'alarms', AlarmViewSet)
-
+router.register(r'alarmclients', AlarmClientViewSet)
 
 urlpatterns = [
     re_path('admin/', admin.site.urls),

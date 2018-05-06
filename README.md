@@ -44,6 +44,18 @@ After your application has deployed, run the following commands through the comm
 	> git push heroku master
 
 
+## Tools
+
+### Postman Collection
+
+To test API endpoints, a Postman API collection is included in the tools folder.
+
+1. Download Postman
+2. Import the JSON file by going to File -> Import
+3. Once imported, right click on the collection labeled "Smart Alarm" and choose Edit. 
+4. In the "Variables" tab, update the API_ROOT value with your Heroku URL (e.g. http://my-heroku-app-name.herokuapp.com) and the API_KEY value with your API key, which would be found at this path: /admin/authtoken/token/
+
+
 #Front-End 
 To bootstrap the front end GUI:
 

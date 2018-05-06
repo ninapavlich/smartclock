@@ -27,7 +27,9 @@ class Alarm(models.Model):
     active = models.BooleanField(default=True)
     allow_snooze = models.BooleanField(default=True)
 
-    last_synchronized = models.DateTimeField(null=True, blank=True)
+    next_alarm_time = models.DateTimeField(null=True, blank=True)
+    last_stopped_time = models.DateTimeField(null=True, blank=True)
+    last_snoozed_time = models.DateTimeField(null=True, blank=True)
 
     repeat_mon = models.BooleanField(default=True)
     repeat_tue = models.BooleanField(default=True)
@@ -37,11 +39,38 @@ class Alarm(models.Model):
     repeat_sat = models.BooleanField(default=True)
     repeat_sun = models.BooleanField(default=True)
 
-    def synchronize(self):
-        self.last_synchronized = timezone.now()
+    def snooze(self):
+        self.last_snoozed_time = timezone.now()
         self.save()
+
+    def stop(self):
+        self.last_stopped_time = timezone.now()
+        self.save()
+
+    def calculate_next_alarm_time(self):
+        pass
+
+    def save(self, *args, **kwargs):
+        self.calculate_next_alarm_time()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return 'Alarm %s at %s' % (self.name, self.time)
     
+
+class AlarmClient(models.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, primary_key=True)
+
+    alarm_delay = models.IntegerField(default=0, help_text="Length of time to delay before triggering this alarm client")
+
+    last_synchronized = models.DateTimeField(null=True, blank=True)
+
+    def synchronize(self):
+        self.last_synchronized = timezone.now()
+        self.save()
+    
+    def __str__(self):
+        return 'Alarm Client %s' % (self.name)
+
 

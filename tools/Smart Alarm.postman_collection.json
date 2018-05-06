@@ -1,0 +1,443 @@
+{
+	"info": {
+		"_postman_id": "3b3c6afb-f186-7167-6bb2-a45c9cafd3d9",
+		"name": "Smart Alarm",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get alarm list",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarms/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarms",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get alarm detail",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarms/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarms",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete alarm detail",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarms/2/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarms",
+						"2",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit alarm - form data",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Name Test",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "time",
+							"value": "08:00:00",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "active",
+							"value": "true",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "allow_snooze",
+							"value": "true",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "repeat_mon",
+							"value": "true",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "repeat_tue",
+							"value": "true",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "repeat_wed",
+							"value": "true",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "repeat_thu",
+							"value": "false",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "repeat_fri",
+							"value": "true",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "repeat_sat",
+							"value": "true",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "repeat_sun",
+							"value": "true",
+							"description": ""
+						},
+						{
+							"key": "sound",
+							"value": "",
+							"description": "",
+							"type": "file"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarms/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarms",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit alarm - raw",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Test ing\",\n    \"sound\": null,\n    \"sound_md5\": null,\n    \"time\": \"06:00:00\",\n    \"active\": true,\n    \"allow_snooze\": false,\n    \"last_synchronized\": \"2018-04-03T23:10:23.134967-07:00\",\n    \"repeat_mon\": true,\n    \"repeat_tue\": false,\n    \"repeat_wed\": true,\n    \"repeat_thu\": false,\n    \"repeat_fri\": true,\n    \"repeat_sat\": false,\n    \"repeat_sun\": false\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarms/1/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarms",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create alarm",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Test ing 2\",\n    \"sound\": null,\n    \"sound_md5\": null,\n    \"time\": \"08:00:00\",\n    \"active\": true,\n    \"allow_snooze\": true,\n    \"last_synchronized\": \"2018-04-03T23:10:23.134967-07:00\",\n    \"repeat_mon\": true,\n    \"repeat_tue\": false,\n    \"repeat_wed\": true,\n    \"repeat_thu\": false,\n    \"repeat_fri\": true,\n    \"repeat_sat\": false,\n    \"repeat_sun\": false\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarms/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarms",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "snooze alarm",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarms/1/snooze/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarms",
+						"1",
+						"snooze",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stop alarm",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarms/1/stop/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarms",
+						"1",
+						"stop",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get alarm client list",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarmclients/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarmclients",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get alarm client detail",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarmclients/flip-clock/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarmclients",
+						"flip-clock",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "synchronize alarm client",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token c8e094d7b29e3798e4639610942bee1949275bfb"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/alarmclients/flip-clock/synchronize/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"alarmclients",
+						"flip-clock",
+						"synchronize",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

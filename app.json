@@ -3,6 +3,7 @@
   "description": "IOT Smart Clock CMS for Django",
   "repository": "https://github.com/ninapavlich/smartclock",
   "keywords": ["Django", "Heroku"],
+  "addons": ["heroku-postgresql:hobby-dev", "scheduler:standard", "cloudmqtt:cat"],
   "env": {
     "SECRET_KEY": {
       "description": "A secret key for encryption used on this application.",
