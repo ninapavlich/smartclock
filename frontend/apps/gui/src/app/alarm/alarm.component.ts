@@ -107,13 +107,13 @@ export class AlarmComponent implements OnInit {
     this.updateModel("Alarm.updateTime()");
   }
   deleteAlarm(){
-    this.alarmsService.deleteAlarm(this.pk)
+    this.alarmsService.deleteAlarm(this.pk);
   }
   pause(){
     this.soundpicker_input.pause();
   }
   onSoundpickerPlaybackChange(playing:boolean){
-    this.playbackchange.emit({"playing":playing, "pk":this.pk})
+    this.playbackchange.emit({"playing":playing, "pk":this.pk});
   }
   onSoundpickerSourceChange(src:File){
     if(this.sound == src){ return; }
@@ -161,7 +161,7 @@ export class AlarmComponent implements OnInit {
     
     let hours = parseInt(time.split(":")[0]);
     let minutes = parseInt(time.split(":")[1]);
-    let now = new Date()
+    let now = new Date();
     now.setHours(hours);
     now.setMinutes(minutes);
     return now;

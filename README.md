@@ -28,13 +28,13 @@ To bootstrap Django:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/ninapavlich/smartclock/blob/master)
 
-When configuring the fields, be sure to take note of the App Name, as you will be using this in the next steops. 
+When configuring the fields, be sure to take note of the App Name, as you will be using this in the next steps. 
 
 After your application has deployed, run the following commands through the command line Heroku CLI and follow the prompts:
 
 	> heroku run python manage.py createsuperuser --app=<replace-with-app-name>
 	> heroku run python manage.py drf_create_token <replace-with-username> --app=<replace-with-app-name>
-	> heroku ps:scale web=1
+	> heroku ps:scale web=1 --app=<replace-with-app-name>
 
 ## Manual Heroku Configuration:
 	

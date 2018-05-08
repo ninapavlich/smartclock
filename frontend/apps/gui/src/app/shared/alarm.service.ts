@@ -22,7 +22,7 @@ export class AlarmsService {
   }
   public init(api_root, api_auth_header){
     if(api_auth_header === ""){
-      alert("API key has not been properly provided to the application. Please verify that you have generated an auth token and are logged in. See the README.md for more details.")
+      alert("API key has not been properly provided to the application. Please verify that you have generated an auth token and are logged in. See the README.md for more details.");
       return;
     }
     AlarmsService.api_root = api_root;
@@ -43,7 +43,7 @@ export class AlarmsService {
   }
   public loadAlarms() {
     this.loading.emit(true);
-    let headers = AlarmsService.getAuthHeaders()
+    let headers = AlarmsService.getAuthHeaders();
     headers.set('content-type', "application/json");
 
     return this.http.get(AlarmsService.getAPIURL(), {headers: headers})
@@ -77,10 +77,10 @@ export class AlarmsService {
     return null;
   }
   public createAlarm(alarm_json:any){
-    let alarm = new AlarmService(this.http)
+    let alarm = new AlarmService(this.http);
     alarm.fromJSON(alarm_json);
     this.alarms.push(alarm);
-    return alarm
+    return alarm;
   }
   deleteAlarm(pk:string){
     let alarm = this.getAlarmByPK(pk);
@@ -185,7 +185,7 @@ export class AlarmService {
     // console.log("save: "+debug_caller)
     this.loading.emit(true);
     let headers = AlarmsService.getAuthHeaders();
-    let data = this.toFormData()
+    let data = this.toFormData();
     
 
     if(this.url){
@@ -217,7 +217,7 @@ export class AlarmService {
   }
   delete(){
     if(this.url){
-      let headers = AlarmsService.getAuthHeaders()
+      let headers = AlarmsService.getAuthHeaders();
       headers.set('content-type', "application/json");
       return this.http.delete(this.url, {headers: headers})
         .map(res => res.json()).subscribe(

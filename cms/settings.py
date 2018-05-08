@@ -125,6 +125,8 @@ else:
         'default': dj_database_url.config(conn_max_age=600, ssl_require=SECURE_SSL_REDIRECT)
     }
 
+# 
+# DATABASE_SCOPE = DATABASES['default']['NAME'].split('/')[-1]
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -149,7 +151,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'US/Pacific'
+TIME_ZONE = env('TIME_ZONE', default='US/Pacific')
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -206,3 +208,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
+MQTT_USERNAME = env("MQTT_USERNAME", default=None)
+MQTT_PASSWORD = env("MQTT_PASSWORD", default=None)
+MQTT_HOST = env("MQTT_HOST", default=None)
+MQTT_PORT = int(env("MQTT_PORT", default=1883))
+MQTT_CLIENT_NAME = env("MQTT_CLIENT_NAME", default='iot-server-%s'%(APP_SCOPE))

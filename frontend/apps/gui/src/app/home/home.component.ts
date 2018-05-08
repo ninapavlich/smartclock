@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
         "repeat_fri": true,
         "repeat_sat": true,
         "repeat_sun": true
-    })
+    });
   }
 
   onSoundpickerPlaybackChange(event:any){
