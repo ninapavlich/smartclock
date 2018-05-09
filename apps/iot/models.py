@@ -109,6 +109,14 @@ class Alarm(models.Model):
             return ('%s%s'%(str(self.pk).zfill(8), file_extension)).upper()
         return ''
 
+    @property
+    def sound_filename_md5(self):
+        if self.sound:
+            return ('%s%s'%(str(self.pk).zfill(8), '.md5')).upper()
+        return ''
+
+        
+
     def __str__(self):
         return 'Alarm %s at %s' % (self.name, self.time)
     

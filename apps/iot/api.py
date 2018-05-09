@@ -20,7 +20,7 @@ class AlarmSerializer(serializers.ModelSerializer):
                   'allow_snooze', 'next_alarm_time', 'last_stopped_time', 
                   'last_snoozed_time', 'repeat_mon','repeat_tue','repeat_wed',
                   'repeat_thu','repeat_fri','repeat_sat','repeat_sun',
-                  'sound_filename_83']
+                  'sound_filename_83', 'sound_filename_md5']
 
 
 class AlarmViewSet(viewsets.ModelViewSet):
