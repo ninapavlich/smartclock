@@ -16,7 +16,11 @@ class AlarmSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Alarm
-        fields = ['url', 'pk', 'name', 'sound', 'sound_md5', 'time', 'active', 'allow_snooze', 'next_alarm_time', 'last_stopped_time', 'last_snoozed_time', 'repeat_mon','repeat_tue','repeat_wed','repeat_thu','repeat_fri','repeat_sat','repeat_sun']
+        fields = ['url', 'pk', 'name', 'sound', 'sound_md5', 'time', 'active', 
+                  'allow_snooze', 'next_alarm_time', 'last_stopped_time', 
+                  'last_snoozed_time', 'repeat_mon','repeat_tue','repeat_wed',
+                  'repeat_thu','repeat_fri','repeat_sat','repeat_sun',
+                  'sound_filename_83']
 
 
 class AlarmViewSet(viewsets.ModelViewSet):

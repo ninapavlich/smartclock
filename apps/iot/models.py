@@ -102,6 +102,13 @@ class Alarm(models.Model):
         self.calculate_next_alarm_time()
         super().save(*args, **kwargs)
 
+    @property
+    def sound_filename_83(self):
+        if self.sound:
+            filename, file_extension = os.path.splitext(self.sound.url)
+            return ('%s%s'%(str(self.pk).zfill(8), file_extension)).upper()
+        return ''
+
     def __str__(self):
         return 'Alarm %s at %s' % (self.name, self.time)
     
