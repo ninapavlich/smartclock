@@ -25,7 +25,11 @@ class AlarmAdmin(admin.ModelAdmin):
 @admin.register(AlarmClient)
 class AlarmClientAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ['name', 'slug', 'alarm_delay', 'last_synchronized']
+    list_display = ['name', 'slug', 'alarm_delay']
     
     search_fields = ['name', 'slug']
-    readonly_fields = ['last_synchronized']
+
+
+@admin.register(AlarmClientAlarmSynchronized)
+class AlarmClientAlarmSynchronizedAdmin(admin.ModelAdmin):
+    readonly_fields = ['last_synchronized']    

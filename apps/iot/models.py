@@ -5,10 +5,12 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.formats import date_format
 from django.utils.module_loading import import_string
 
 from cms.utils.md5_file_field import MD5FileField
@@ -22,6 +24,34 @@ def alarm_song_upload_path(instance, filename):
     filename, file_extension = os.path.splitext(filename)
     converted_filename = u'%s%s' % (filename.lower(), file_extension)
     return os.path.join('alarm', converted_filename)
+
+def datetime_to_json(dt):
+    """ Utility for facilitating date time parsing on lower-level programs"""
+    if not dt:
+        return {
+            'year':0,
+            'month':0,
+            'day':0,
+            'hour':0,
+            'minute':0,
+            'second':0,
+            'timezone':0
+        }
+
+    return {
+        'year':int(date_format(timezone.localtime(dt), "Y")),
+        'month':int(date_format(timezone.localtime(dt), "m")),
+        'day':int(date_format(timezone.localtime(dt), "d")),
+        'hour':int(date_format(timezone.localtime(dt), "G")),
+        'minute':int(date_format(timezone.localtime(dt), "i")),
+        'second':int(date_format(timezone.localtime(dt), "s")),
+        'timezone':(date_format(timezone.localtime(dt), "O"))
+    }
+
+def now_localized():
+    tz = pytz.timezone(settings.TIME_ZONE)
+    now = tz.localize(datetime.datetime.now())
+    return now
 
 class Alarm(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
@@ -80,8 +110,7 @@ class Alarm(models.Model):
         if len(active_weekdays) == 0:
             return
 
-        tz = pytz.timezone(settings.TIME_ZONE)
-        now = tz.localize(datetime.datetime.now())
+        now = now_localized()
 
         now_at_time = now.replace(hour=self.time.hour, minute=self.time.minute, second=self.time.second)
         
@@ -127,14 +156,62 @@ class AlarmClient(models.Model):
 
     alarm_delay = models.IntegerField(default=0, help_text="Length of time to delay before triggering this alarm client")
 
+    @property
+    def current_time(self):
+        return datetime_to_json(timezone.now())
+
+    @property
+    def synchronized_alarms(self):
+        all_alarms = Alarm.objects.all()
+        items = []
+        for alarm in all_alarms:
+            item, created = AlarmClientAlarmSynchronized.objects.get_or_create(client=self,alarm=alarm)
+            items.append({
+                'alarm_pk':item.alarm.pk,
+                'alarm_name':item.alarm.name,
+                'last_synchronized':datetime_to_json(item.last_synchronized)
+            })
+
+        return items
+
+    def synchronize(self, alarm_ids_raw):
+        alarm_ids = alarm_ids_raw.split(',')
+        for alarm_id in alarm_ids:
+            alarm = None
+            try:
+                alarm = Alarm.objects.get(pk=alarm_id)
+            except ObjectDoesNotExist:
+                pass
+
+            if alarm:
+                item, created = AlarmClientAlarmSynchronized.objects.get_or_create(client=self,alarm=alarm)
+                item.synchronize()
+        
+
+    def __str__(self):
+        return 'Alarm Client %s' % (self.name)
+
+
+class AlarmClientAlarmSynchronized(models.Model):
+    alarm = models.ForeignKey('Alarm', on_delete=models.CASCADE)
+    client = models.ForeignKey('AlarmClient', on_delete=models.CASCADE)
+    
     last_synchronized = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def current_time(self):
+        return datetime_to_json(timezone.now())
+
+    @property
+    def last_synchronized_time(self):
+        return datetime_to_json(self.last_synchronized)
 
     def synchronize(self):
         self.last_synchronized = timezone.now()
         self.save()
     
     def __str__(self):
-        return 'Alarm Client %s' % (self.name)
+        return '%s on %s - %s' % (self.alarm, self.client, self.last_synchronized)        
 
 
 @receiver(post_save, sender=Alarm)

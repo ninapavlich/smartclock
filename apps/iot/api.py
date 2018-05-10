@@ -49,10 +49,12 @@ class AlarmViewSet(viewsets.ModelViewSet):
 
 
 class AlarmClientSerializer(serializers.ModelSerializer):
+    synchronized_alarms = serializers.JSONField()
+    current_time = serializers.JSONField()
 
     class Meta:
         model = AlarmClient
-        fields = ['url', 'name', 'slug', 'alarm_delay', 'last_synchronized']
+        fields = ['url', 'name', 'slug', 'alarm_delay', 'synchronized_alarms', 'current_time']
 
 class AlarmClientViewSet(viewsets.ModelViewSet):
 
@@ -67,7 +69,7 @@ class AlarmClientViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['post'])
     def synchronize(self, request, pk=None):
         alarm = self.get_object()
-        alarm.synchronize()
+        alarm.synchronize( request.GET.get('alarms') )
         serializer = self.get_serializer(alarm, many=False)
         return Response(serializer.data)        
 
