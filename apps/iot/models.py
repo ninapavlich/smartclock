@@ -178,15 +178,16 @@ class AlarmClient(models.Model):
         alarm_ids = alarm_ids_raw.split(',')
         for alarm_id in alarm_ids:
             alarm = None
-            try:
-                alarm = Alarm.objects.get(pk=alarm_id)
-            except ObjectDoesNotExist:
-                pass
+            if alarm_id:
+                try:
+                    alarm = Alarm.objects.get(pk=alarm_id)
+                except ObjectDoesNotExist:
+                    pass
 
-            if alarm:
-                item, created = AlarmClientAlarmSynchronized.objects.get_or_create(client=self,alarm=alarm)
-                item.synchronize()
-        
+                if alarm:
+                    item, created = AlarmClientAlarmSynchronized.objects.get_or_create(client=self,alarm=alarm)
+                    item.synchronize()
+            
 
     def __str__(self):
         return 'Alarm Client %s' % (self.name)
