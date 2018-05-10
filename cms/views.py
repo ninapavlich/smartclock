@@ -41,14 +41,14 @@ class GUITemplateView(UserPassesTestMixin, TemplateView):
         return context
 
 
-view_400(request, exception, template_name='404.html'):
+def view_400(request, exception, template_name='404.html'):
     pass
 
-view_403(request, exception, template_name='404.html'):
+def view_403(request, exception, template_name='404.html'):
     pass
 
-view_404(request, exception, template_name='404.html'):
+def view_404(request, exception, template_name='404.html'):
     pass
 
-view_500(request, template_name='404.html'):
+def view_500(request, template_name='404.html'):
     pass    
