@@ -27,18 +27,19 @@ const char* API_HOST_SSL_FINGERPRINT = "REPLACEME";
 const char* MEDIA_HOST_SSL_FINGERPRINT = "REPLACEME";
 
 
-
 const String API_ALARM_ROOT = String(API_ROOT) + "/api/alarms/?format=json";
+const String API_ALARM_CLIENT_ROOT = String(API_ROOT) + "/api/alarmclients/"+API_CLIENT_ID+"/";
+const String API_ALARM_CLIENT_SYNC_ROOT = String(API_ROOT) + "/api/alarmclients/"+API_CLIENT_ID+"/synchronize/";
 const String API_AUTHORIZATION_HEADER = "Token "+ String(API_KEY);
 const int CHECK_ALARMS_SEC = 10;
-const int API_POLL_SEC = 60;
+const int API_POLL_SEC = 600;
 
 const char* MQTT_USERNAME = "REPLACEME";
 const char* MQTT_PASSWORD = "REPLACEME";
 const char* MQTT_HOST = "REPLACEME";
 const int MQTT_PORT = 1883;
 const char* MQTT_PATH = "iot/alarm/updated/";
-const int PING_SEC = 60;
+const int PING_SEC = 300;
 
 
 // These are the pins used
@@ -103,6 +104,16 @@ uint32_t nextAPIPoll = 0;        // Next time server should be polled
 uint32_t nextAlarmCheck = 0;     // Next time we should check the alarms
 const int STREAM_SIZE = 128;
 
+//LOGGING Helper
+bool sd_inited = false;
+bool time_inited = false;
+const int WRITE_LOG_SECONDS = 30; //auto empty the log queue every X seconds or when it fills up
+uint32_t nextLogWrite = 0;
+const int MAX_LOG_QUEUE = 10;
+String log_queue[MAX_LOG_QUEUE];
+int log_queue_millis[MAX_LOG_QUEUE];
+int log_queue_count = 0;
+
 void connectMQTT(); //function prototype HACK
 
 
@@ -120,7 +131,141 @@ void audioAlert(int beeps){
   }
   delay(200);
 }
+String zeroFill(int num, int digits){
+  String num_str = String(num);
+  int len = num_str.length();
+  for (int i = 0; i < digits - len; i++){
+    num_str = "0" + num_str;
+  }
+  return num_str;
+}
 
+/* --------------------------------------------------
+ * TIMING UTILITIES --------------------------------
+ * --------------------------------------------------
+ */
+class DateTime {
+public:  
+
+    int sync_year = 0;
+    int sync_month = 0;
+    int sync_day = 0;
+    int sync_hour = 0;
+    int sync_minute = 0;
+    int sync_second = 0;
+    uint32_t sync_time = 0;
+    
+    void parse_json(JsonVariant json) {
+      
+      this->current_year = this->sync_year = json["current_time"]["year"].as<int>();
+      this->current_month = this->sync_month = json["current_time"]["month"].as<int>();
+      this->current_day = this->sync_day = json["current_time"]["day"].as<int>();
+      this->current_hour = this->sync_hour = json["current_time"]["hour"].as<int>();
+      this->current_minute = this->sync_minute = json["current_time"]["minute"].as<int>();
+      this->current_second = this->sync_second = json["current_time"]["second"].as<int>();
+      this->last_tick = this->sync_time = millis();
+    }
+
+    String getTimeStamp(){
+//      this->tick();
+      return String(this->current_year) + ":" + zeroFill(this->current_month, 2) + ":" + zeroFill(this->current_day, 2) + " " + zeroFill(this->current_hour, 2) + ":" + zeroFill(this->current_minute, 2) + ":" + zeroFill(this->current_second, 2);
+    }
+    int getCurrentYear(){
+      this->tick();
+      return this->current_year;
+    }
+    int getCurrentMonth(){
+      this->tick();
+      return this->current_month;
+    }
+    int getCurrentDay(){
+      this->tick();
+      return this->current_day;
+    }
+    int getCurrentHour(){
+      this->tick();
+      return this->current_hour;
+    }
+    int getCurrentMinute(){
+      this->tick();
+      return this->current_minute;
+    }
+    int getCurrentSecond(){
+      this->tick();
+      return this->current_second;
+    }
+
+    void tick(){
+      if(!time_inited){
+        return;
+      }
+      uint32_t dt = (millis() - last_tick);
+      int ds = int(dt/1000);
+
+//      Serial.println("need to add "+String(ds)+" seconds to the internal time values");
+  
+      if( dt < 1000){
+//        Serial.println("tick is less than a second");
+        return;
+      }
+
+      this->current_second = this->current_second + ds;
+      if(this->current_second >= 60){
+        this->current_second = this->current_second % 60;
+        this->current_minute = this->current_minute + 1;
+//        Serial.println("Increment minutes...");
+      }
+
+      if(this->current_minute >= 60){
+        this->current_minute = this->current_minute % 60;
+        this->current_hour = this->current_hour + 1;
+//        Serial.println("Increment hours...");
+      }
+      //NOTE: Below here shouln't apply, since we will receive an updated value from the server before then:
+      if(this->current_hour >= 24){
+        this->current_hour = this->current_hour % 24;
+        this->current_day = this->current_day + 1;
+//        Serial.println("Increment days...");
+      }
+      if(this->current_day >= 31){
+        this->current_day = this->current_day % 31;
+        this->current_month = this->current_month + 1;
+//        Serial.println("Increment months...");
+      }
+      if(this->current_month >= 12){
+        this->current_month = this->current_month % 12;
+        this->current_year = this->current_year + 1;
+//        Serial.println("Increment years...");
+      }
+      
+      last_tick = millis();
+
+//      Serial.println(this->getTimeStamp());
+    }
+
+private:
+
+  uint32_t last_tick = 0;
+  int current_year = 0;
+  int current_month = 0;
+  int current_day = 0;
+  int current_hour = 0;
+  int current_minute = 0;
+  int current_second = 0;
+  
+  
+
+};
+
+DateTime now;
+
+void getTimeAt(int ms){
+  //
+  Serial.println("going to create a datetime object at a certain ms offset");
+}
+//String millisToTimeStamp(int ms){
+//  return String(current_year) + ":" + zeroFill(current_month, 2) + ":" + zeroFill(current_day, 2) + " " + zeroFill(current_hour, 2) + ":" + zeroFill(current_minute, 2) + ":" + zeroFill(current_second, 2);
+//}
 
 /* --------------------------------------------------
  * Models -------------------------------------------
@@ -184,14 +329,14 @@ Alarm alarm_hash[MAX_ALARMS];
  * SD Utilities ----------------------------------
  * --------------------------------------------------
  */
-
 void initSDCard(){
   Serial.println("initSDCard()");
   if (!SD.begin(CARDCS)) {
-    Serial.println(F("SD failed, or not present"));
+    Serial.println("ERROR: SD failed, or not present");
     while (1);  // don't do anything more
   }
-  Serial.println("SD initialization done.");
+  sd_inited = true;
+  log("SD initialization done.");
 }
 
 bool downloadFileToSD(String url, String filename){
@@ -201,23 +346,21 @@ bool downloadFileToSD(String url, String filename){
 
   File file = SD.open(filename, FILE_WRITE);
   if (!file) {
-    Serial.println(F("Could not create alarm file"));
+    Serial.println(F("-- Could not create file for downloading"));
   }else{
-    Serial.printf("Starting download....\n");
     http.end();
     http.setReuse(true);
     http.setTimeout(15000);
     http.begin( url, MEDIA_HOST_SSL_FINGERPRINT );
-    Serial.printf("post begin");
     auto httpCode = http.GET();
     if (httpCode > 0) {
       // HTTP header has been send and Server response header has been handled
-      Serial.printf("[HTTP] GET... code: %d\n", httpCode);
+      log("-- [HTTP] GET "+String(url)+" code: "+String(httpCode));
       if (httpCode == HTTP_CODE_OK) {
         // get length of document (is -1 when Server sends no Content-Length header)
         int len = http.getSize();
         int total_len = len;
-        Serial.printf("response size: %d\n", len);
+        Serial.printf("-- [HTTP] response size: %d\n", len);
         
         uint8_t buff[STREAM_SIZE] = { 0 };
         WiFiClient * stream = http.getStreamPtr();
@@ -235,19 +378,21 @@ bool downloadFileToSD(String url, String filename){
           delay(1);
         }
         successful = true;
-        Serial.print("[HTTP] connection closed or file end.\n");
+        Serial.print("-- [HTTP] connection closed or file end.\n");
       }
     } else {
-        Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+        log("-- [HTTP] GET "+String(url)+" failed, error: "+ String(http.errorToString(httpCode).c_str()));
     }
     http.end();
   }
   file.close();
   return successful;
 }
-
 void createFile(String filename, String contents){
 
+  //Remove existing
+  SD.remove(filename);
+  
   Serial.printf("Creating file %s with contents %s\n", filename.c_str(), contents.c_str());
   File file = SD.open(filename, FILE_WRITE);
   if (!file) {
@@ -256,17 +401,6 @@ void createFile(String filename, String contents){
     file.println(contents);
   }
   file.close();
-
-  Serial.println("VERIFY:");
-  file = SD.open(filename);
-  if (file) {
-    // read from the file until there's nothing else in it:
-    while (file.available()) {
-      Serial.write(file.read());
-    }
-    // close the file:
-    file.close();
-  }
   
 }
 bool doesFileExist(String filename){
@@ -289,13 +423,17 @@ bool doFileContentsMatch(String filename, String match_contents){
     
     // read from the file until there's nothing else in it:
     String file_contents = "";
+    char c;
     while (file.available()) {
-      int line = file.read();
-      Serial.write(line);
-      file_contents = file_contents + line;
+      c=file.read();
+//      Serial.write(c);
+      file_contents=file_contents+String(c);
     }
-    Serial.printf("Do file contents for %s match? %s vs %s\n", filename.c_str(), match_contents.c_str(), file_contents.c_str());
+    //Trim file whitespace
+    file_contents.trim();
     
+//    Serial.printf("Do file contents for %s match? %s vs %s\n", filename.c_str(), match_contents.c_str(), file_contents.c_str());
+//    Serial.println(file_contents == match_contents);
     if(file_contents == match_contents){
       matches = true;
     }
@@ -312,11 +450,11 @@ bool doFileContentsMatch(String filename, String match_contents){
  * --------------------------------------------------
  */
 void initMusicPlayer(){
+  log("initMusicPlayer()");
   if (! musicPlayer.begin()) { // initialise the music player
-     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
+     log("Couldn't find VS1053, do you have the right pins defined?");
      while (1);
   }
-
 }
 
 /* --------------------------------------------------
@@ -325,24 +463,17 @@ void initMusicPlayer(){
  */
 void initWifi(){
 
+  Serial.println("Connecting to Wifi with "+String(WIFI_SSID)+" : "+String(WIFI_PASSWORD));
   
-  Serial.println(F("Connecting to "));
-  Serial.println(WIFI_SSID);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println(F("."));
+    delay(1000);
+    Serial.println(".");
   }
- 
-  Serial.println(F("WiFi connected"));  
-  Serial.println(F("IP address: "));
   Serial.println(WiFi.localIP());
-
-  
-  
-  
-
+  Serial.println("WiFi connected with IP address: "+String(WiFi.localIP()));
+ 
 }
 
 
@@ -366,11 +497,10 @@ Alarm getOrCreateAlarm(JsonVariant alarm_json){
 //  - return alarm
 
   if(alarm.pk == 0){
-    Serial.println(F("---- NEW ALARM Found! ----"));
     alarm.parse_json(alarm_json);
+    log("New alarm "+String(alarm.pk));
     alarm_hash[alarm.pk] = alarm;
     alarm_pks[alarm_count] = alarm.pk;
-//    Serial.printf("New alarm %d at %d = %d\n", alarm.pk, alarm_count, alarm_pks[alarm_count]);
     alarm_count += 1;
     audioAlert(1);
   }else{
@@ -430,16 +560,7 @@ void snoozeAlarm (Alarm alarm){
 //  http.end()
 }
 
-void markAlarmClientSynchronized (Alarm alarm);  // function prototype
-void markAlarmClientSynchronized (Alarm alarm){
-  Serial.println("TODO: synchronize client...");
-    
-//  http.begin(API_ROOT, API_PORT, "/api/alarmclients/"+API_CLIENT_ID+"/synchronize/");
-//  http.addHeader("Content-Type", "application/json");
-//  http.addHeader("Authorization", API_AUTHORIZATION_HEADER);
-//  auto httpCode = http.POST(payload);
-//  http.end()
-}
+
 void checkAlarms(){
 //  bool is_active_alarm = active_alarm.pk == alarm.pk;
 //  bool is_alarm_going = isAlarmGoing(alarm);
@@ -450,35 +571,58 @@ void checkAlarms(){
 //    stopAlarm(alarm);
 //  }
 }
-void checkAlarmMusic(Alarm alarm);  // function prototype
-void checkAlarmMusic(Alarm alarm){
+bool downloadAlarmMusic(Alarm alarm);  // function prototype
+bool downloadAlarmMusic(Alarm alarm){
+  log("downloadAlarmMusic("+String(alarm.pk)+")");
+  
   bool alarmFileExists = doesFileExist(alarm.sound_filename_83);
   bool md5FileExists = doesFileExist(alarm.sound_filename_md5);
   bool md5ValuesMatch = doFileContentsMatch(alarm.sound_filename_md5, alarm.sound_md5);
 
-  Serial.printf("alarmFileExists:%d md5FileExists:%d md5ValuesMatch:%d \n", alarmFileExists, md5FileExists, md5ValuesMatch);
+  bool synchronized = false;
+  
+  log("-- alarmFileExists:"+String(alarmFileExists)+" md5FileExists:"+String(md5FileExists)+" md5ValuesMatch:"+String(md5ValuesMatch));
   if(alarmFileExists == false || md5FileExists == false ||  md5ValuesMatch == false){
-    //Remove in case corrupted
-    SD.remove(alarm.sound_filename_83);
-    SD.remove(alarm.sound_filename_md5);
     delay(2000);
     bool download_successful = downloadFileToSD(alarm.sound, alarm.sound_filename_83);
-    Serial.printf("Alarm sound downloaded successfully? %d\n", download_successful);
     if(download_successful){
       createFile(alarm.sound_filename_md5, alarm.sound_md5);  
-      markAlarmClientSynchronized(alarm);
+      log("Alarm "+String(alarm.pk)+" successfully synchronized");
       audioAlert(3);
-      
+      synchronized = true;
     }else{
       createFile(alarm.sound_filename_md5, "0");  
     }
     
   }else{
-    Serial.println("all good, alarm file is downloaded.");
+    synchronized = true;
   }
+  return synchronized;
 }
 
 
+void getServerTime(){
+  
+  log( "getServerTime()" );
+  http.end();
+  http.setReuse(true);
+  http.begin( API_ALARM_CLIENT_ROOT, API_HOST_SSL_FINGERPRINT );
+  http.addHeader("Authorization", API_AUTHORIZATION_HEADER);
+  auto httpCode = http.GET();
+  log( "-- [HTTP] GET "+String(API_ALARM_CLIENT_ROOT)+"... code: "+String(httpCode) );
+  if (httpCode > 0) {
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject& alarm_client_json = jsonBuffer.parseObject(http.getString());
+
+    now.parse_json(alarm_client_json);
+    time_inited = true;
+    
+  } else {
+      log( "-- [HTTP] GET "+String(API_ALARM_CLIENT_ROOT)+" failed, error: "+ String(http.errorToString(httpCode).c_str()) );
+  }
+  http.end();   //Close connection
+
+}
 void getAlarms(){
 
   int new_alarm_count = 0;
@@ -488,14 +632,13 @@ void getAlarms(){
 //  int old_alarm_pks[MAX_ALARMS];
 //  old_alarm_pks = alarm_pks;
   
-  
   Serial.println("getAlarms()");
-  Serial.println(API_ALARM_ROOT);
   http.end();
   http.setReuse(true);
   http.begin( API_ALARM_ROOT, API_HOST_SSL_FINGERPRINT );
   http.addHeader("Authorization", API_AUTHORIZATION_HEADER);
   auto httpCode = http.GET();
+  log("-- [HTTP] GET "+String(API_ALARM_ROOT)+" code: "+String(httpCode));
   if (httpCode > 0) {
     DynamicJsonBuffer jsonBuffer;
     JsonArray& alarms_json = jsonBuffer.parseArray(http.getString());
@@ -504,7 +647,7 @@ void getAlarms(){
        new_alarm_pks[new_alarm_count++] = alarm.pk;
     }
   } else {
-      Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+      log("-- [HTTP] GET "+String(API_ALARM_ROOT)+" failed, error: "+String(http.errorToString(httpCode).c_str()));
   }
   http.end();   //Close connection
 
@@ -526,19 +669,46 @@ void getAlarms(){
 
   
 }
-void checkAllAlarmMusic(){
+void synchronizeAlarms(){
+  Serial.println("synchronizeAlarms()");
+  String alarm_sync_list = "";
   for (int i=0; i < alarm_count; i++){
-    Serial.println(i);
     int alarm_pk = alarm_pks[i];
     Alarm alarm = alarm_hash[alarm_pk];    
-    checkAlarmMusic(alarm);
-  }  
+    bool synchronized = downloadAlarmMusic(alarm);
+    if(synchronized){
+      alarm_sync_list = alarm_sync_list + (String(alarm_pk)+",");
+    }
+  } 
+  
+  String data = "";
+  String url = API_ALARM_CLIENT_SYNC_ROOT + "?alarms="+alarm_sync_list;
+
+  http.end();
+  http.setReuse(true);
+  http.begin( url, API_HOST_SSL_FINGERPRINT );
+  http.addHeader("Authorization", API_AUTHORIZATION_HEADER);
+  auto httpCode = http.POST(data);
+  log("-- [HTTP] POST "+String(url)+" code: "+String(httpCode));
+  if (httpCode > 0) {
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject& alarm_client_json = jsonBuffer.parseObject(http.getString());
+
+    now.parse_json(alarm_client_json);
+    time_inited = true;
+    Serial.println("--- timestamp = "+now.getTimeStamp());
+    
+    
+  } else {
+      log("-- [HTTP] POST "+String(url)+" failed, error: "+ String( http.errorToString(httpCode).c_str()));
+  }
+  http.end();   //Close connection
 }
 
 void pollAlarms(){
   if (millis() >= nextAPIPoll) {
     getAlarms();
-    checkAllAlarmMusic();
+    synchronizeAlarms();
     checkAlarms();
     // Set the time for the next ping.
     nextAPIPoll = millis() + API_POLL_SEC*1000L;
@@ -627,18 +797,85 @@ void pollAlarms(){
 //}
 
 
+/* --------------------------------------------------
+ * LOGGING UTILITIES --------------------------------
+ * --------------------------------------------------
+ */
 
+String getLogFilename(){
+  return String(now.getCurrentYear()) +  zeroFill(now.getCurrentMonth(), 2) + zeroFill(now.getCurrentDay(), 2) + ".LOG";
+}
 
+void writeLogs(){
+  
+//  Serial.println("write file to");
+//  Serial.println(getLogFilename());
+  String logFilename = getLogFilename();
+  File logFile = SD.open(logFilename, FILE_WRITE);
+  if (!logFile) {
+    Serial.println("ERROR - could not open log file at "+logFilename);
+  }else{
 
+    for (int i=0; i < log_queue_count; i++){
+      String message = now.getTimeStamp()+" "+log_queue[i];
+//      Serial.println("writing log: ");
+//      Serial.println(message);
+      logFile.println(message);
+    }
+    
+  }
+  log_queue_count = 0;
+  logFile.close();
+
+  
+}
+void checkLogs(){
+  
+    
+  //  Serial.println("checking logs...");
+  //  Serial.println(log_queue_count);
+  
+  //If either WRITE_LOG_SECONDS has gone by, or the log is full, write all the logs to a file 
+  if(log_queue_count >= MAX_LOG_QUEUE){
+  //    Serial.println("log is full, time to write logs!");
+    writeLogs();
+  }
+  
+  if (millis() >= nextLogWrite) {
+  //    Serial.println("enough time has passed, write the logs!");
+    nextLogWrite = millis() + WRITE_LOG_SECONDS*1000L;
+    writeLogs();
+  }
+
+ 
+
+  
+}
+
+void log(String message){
+  
+  Serial.println(message);
+  
+  checkLogs();
+
+  log_queue[log_queue_count] = message;
+  log_queue_millis[log_queue_count] = millis();
+  log_queue_count += 1;
+  
+  
+
+}
   
 void setup() {
   Serial.begin(115200);
   delay(100);
 
-  //Only done once:
-  initMusicPlayer();
   initSDCard();
   initWifi();
+  getServerTime();
+  initMusicPlayer();
+  
+  
   audioAlert(2);
   
   delay(2000);
@@ -646,8 +883,9 @@ void setup() {
   //These get called on a regular interval...
   getAlarms();
   delay(5000);
-  checkAllAlarmMusic();
+  synchronizeAlarms();
   checkAlarms();
+  log("Successfully retrieved initial alarm info");
   audioAlert(2);
   //  connectMQTT();
   //  audioAlert(5);
@@ -656,7 +894,9 @@ void setup() {
 
 void loop() {
   delay(5000);
-  Serial.println("--- loop ---");
+//  Serial.println("--- loop ---");
+Serial.println(now.getTimeStamp());
+  now.tick();
 //  
 //  // Ensure the connection to the MQTT server is alive (this will make the first
 //  // connection and automatically reconnect when disconnected).  See the connectMQTT
@@ -665,6 +905,7 @@ void loop() {
 //  checkForNewMQTTMessages();
 //  keepAliveMQTT();
   pollAlarms();
+  checkLogs();
 }
 
 
