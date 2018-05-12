@@ -10,15 +10,31 @@ from rest_framework.response import Response
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Alarm, AlarmClient
+from .models import Alarm, AlarmClient, datetime_to_json
+
 
 class AlarmSerializer(serializers.ModelSerializer):
+
+    next_alarm_time_expanded = serializers.SerializerMethodField()
+    last_stopped_time_expanded = serializers.SerializerMethodField()
+    last_snoozed_time_expanded = serializers.SerializerMethodField()
+
+    def get_next_alarm_time_expanded(self, obj):
+        return datetime_to_json(obj.next_alarm_time)
+
+    def get_last_stopped_time_expanded(self, obj):
+        return datetime_to_json(obj.last_stopped_time)
+
+    def get_last_snoozed_time_expanded(self, obj):
+        return datetime_to_json(obj.last_snoozed_time)
 
     class Meta:
         model = Alarm
         fields = ['url', 'pk', 'name', 'sound', 'sound_md5', 'time', 'active', 
-                  'allow_snooze', 'next_alarm_time', 'last_stopped_time', 
-                  'last_snoozed_time', 'repeat_mon','repeat_tue','repeat_wed',
+                  'allow_snooze', 'next_alarm_time', 'next_alarm_time_expanded', 
+                  'last_stopped_time', 'last_stopped_time_expanded',
+                  'last_snoozed_time', 'last_snoozed_time_expanded', 
+                  'repeat_mon','repeat_tue','repeat_wed',
                   'repeat_thu','repeat_fri','repeat_sat','repeat_sun',
                   'sound_filename_83', 'sound_filename_md5']
 
